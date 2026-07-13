@@ -8,6 +8,7 @@ interface Props {
   onStartExam: (exam: Exam) => void
   onStartFolder: (folder: Folder) => void
   onOpenManage: () => void
+  onOpenImport: () => void
   onOpenHistory: () => void
   onDataChanged: () => Promise<void>
 }
@@ -18,6 +19,7 @@ export default function Sidebar({
   onStartExam,
   onStartFolder,
   onOpenManage,
+  onOpenImport,
   onOpenHistory,
   onDataChanged,
 }: Props) {
@@ -73,6 +75,12 @@ export default function Sidebar({
             Geçmiş
           </button>
         </div>
+        <button
+          onClick={onOpenImport}
+          className="mt-2 w-full rounded-lg bg-indigo-600 px-3 py-1.5 text-sm text-white hover:bg-indigo-500"
+        >
+          📥 Toplu Soru Ekle
+        </button>
       </div>
 
       <div className="flex-1 overflow-y-auto p-2">

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import Sidebar from './components/Sidebar'
 import QuestionManager from './components/QuestionManager'
+import BulkImport from './components/BulkImport'
 import Quiz from './components/Quiz'
 import HistoryView from './components/HistoryView'
 import { supabaseConfigured } from './lib/supabase'
@@ -16,6 +17,7 @@ import type { Exam, Folder, Question } from './types'
 type View =
   | { type: 'welcome' }
   | { type: 'manage' }
+  | { type: 'import' }
   | { type: 'history' }
   | { type: 'quiz'; questions: Question[]; title: string }
 
@@ -96,6 +98,7 @@ export default function App() {
         onStartExam={startExamQuiz}
         onStartFolder={startFolderQuiz}
         onOpenManage={() => setView({ type: 'manage' })}
+        onOpenImport={() => setView({ type: 'import' })}
         onOpenHistory={() => setView({ type: 'history' })}
         onDataChanged={reload}
       />
@@ -119,6 +122,9 @@ export default function App() {
         )}
         {view.type === 'manage' && (
           <QuestionManager folders={folders} exams={exams} onDataChanged={reload} />
+        )}
+        {view.type === 'import' && (
+          <BulkImport folders={folders} exams={exams} onDataChanged={reload} />
         )}
         {view.type === 'history' && <HistoryView folders={folders} exams={exams} />}
         {view.type === 'quiz' && (
