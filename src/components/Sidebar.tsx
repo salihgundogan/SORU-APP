@@ -8,6 +8,7 @@ interface Props {
   onStartExam: (exam: Exam) => void
   onStartFolder: (folder: Folder) => void
   onOpenExam: (exam: Exam) => void
+  onDeleteFolder: (folder: Folder) => void
   onOpenManage: () => void
   onOpenImport: () => void
   onOpenHistory: () => void
@@ -20,6 +21,7 @@ export default function Sidebar({
   onStartExam,
   onStartFolder,
   onOpenExam,
+  onDeleteFolder,
   onOpenManage,
   onOpenImport,
   onOpenHistory,
@@ -159,6 +161,12 @@ export default function Sidebar({
                       + Yeni sınav ekle
                     </button>
                   )}
+                  <button
+                    onClick={() => onDeleteFolder(folder)}
+                    className="mt-1 w-full rounded-lg px-3 py-1 text-left text-xs text-red-400 hover:bg-red-50 hover:text-red-600"
+                  >
+                    🗑 Klasörü sil
+                  </button>
                 </div>
               )}
             </div>

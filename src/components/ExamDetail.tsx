@@ -5,9 +5,10 @@ import { deleteQuestion, listQuestionsByExam, updateQuestion } from '../lib/api'
 interface Props {
   exam: Exam
   onStartExam: (exam: Exam) => void
+  onDeleteExam: (exam: Exam) => void
 }
 
-export default function ExamDetail({ exam, onStartExam }: Props) {
+export default function ExamDetail({ exam, onStartExam, onDeleteExam }: Props) {
   const [questions, setQuestions] = useState<Question[] | null>(null)
   const [error, setError] = useState<string | null>(null)
 
@@ -85,12 +86,29 @@ export default function ExamDetail({ exam, onStartExam }: Props) {
             için soruya tıkla.
           </p>
         </div>
-        <button
-          onClick={() => onStartExam(exam)}
-          className="rounded-lg bg-emerald-600 px-4 py-2 font-medium text-white hover:bg-emerald-500"
-        >
-          ▶ Testi Başlat
-        </button>
+        <div className="flex shrink-0 gap-2">
+          <button
+            onClick={() => onStartExam(exam)}
+            className="rounded-lg bg-emerald-600 px-4 py-2 font-medium text-white hover:bg-emerald-500"
+          >
+            ▶ Testi Başlat
+          </button>
+          <button
+            onClick={() => {
+              if (
+                confirm(
+                  `"${exam.name}" sınavı silinecek: içindeki ${questions?.length ?? 0} soru ve deneme geçmişi de silinir. Emin misin?`,
+                )
+              ) {
+                onDeleteExam(exam)
+              }
+            }}
+            className="rounded-lg bg-red-50 px-4 py-2 font-medium text-red-600 hover:bg-red-100"
+            title="Sınavı sil"
+          >
+            🗑 Sınavı Sil
+          </button>
+        </div>
       </div>
 
       {error && (

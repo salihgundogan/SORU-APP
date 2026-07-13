@@ -7,6 +7,8 @@ import Quiz from './components/Quiz'
 import HistoryView from './components/HistoryView'
 import { supabaseConfigured } from './lib/supabase'
 import {
+  deleteExam,
+  deleteFolder,
   listExams,
   listFolders,
   listQuestionsByExam,
@@ -92,6 +94,37 @@ export default function App() {
     }
   }
 
+  const removeFolder = async (folder: Folder) => {
+    const examCount = exams.filter((e) => e.folder_id === folder.id).length
+    if (
+      !confirm(
+        `"${folder.name}" klasörü silinecek: içindeki ${examCount} sınav, tüm sorular ve deneme geçmişi de silinir. Emin misin?`,
+      )
+    )
+      return
+    try {
+      await deleteFolder(folder.id)
+      if (view.type === 'exam' && view.exam.folder_id === folder.id) {
+        setView({ type: 'welcome' })
+      }
+      await reload()
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err))
+    }
+  }
+
+  const removeExam = async (exam: Exam) => {
+    try {
+      await deleteExam(exam.id)
+      if (view.type === 'exam' && view.exam.id === exam.id) {
+        setView({ type: 'welcome' })
+      }
+      await reload()
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err))
+    }
+  }
+
   return (
     <div className="flex h-screen bg-slate-100 text-slate-900">
       <Sidebar
@@ -102,6 +135,7 @@ export default function App() {
         onOpenManage={() => setView({ type: 'manage' })}
         onOpenImport={() => setView({ type: 'import' })}
         onOpenExam={(exam) => setView({ type: 'exam', exam })}
+        onDeleteFolder={removeFolder}
         onOpenHistory={() => setView({ type: 'history' })}
         onDataChanged={reload}
       />
@@ -130,7 +164,12 @@ export default function App() {
           <BulkImport folders={folders} exams={exams} onDataChanged={reload} />
         )}
         {view.type === 'exam' && (
-          <ExamDetail key={view.exam.id} exam={view.exam} onStartExam={startExamQuiz} />
+          <ExamDetail
+            key={view.exam.id}
+            exam={view.exam}
+            onStartExam={startExamQuiz}
+            onDeleteExam={removeExam}
+          />
         )}
         {view.type === 'history' && <HistoryView folders={folders} exams={exams} />}
         {view.type === 'quiz' && (
