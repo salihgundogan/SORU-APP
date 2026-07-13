@@ -55,7 +55,7 @@ export default function HistoryView({ folders, exams }: Props) {
   }
 
   return (
-    <div className="mx-auto max-w-3xl p-6">
+    <div className="mx-auto max-w-3xl p-4 sm:p-6">
       <h2 className="mb-1 text-xl font-bold">Geçmiş</h2>
       <p className="mb-5 text-sm text-slate-500">
         Sınav ve klasör bazında toplam deneme sayısı ile metin/nükte başarı oranları.
@@ -77,8 +77,8 @@ export default function HistoryView({ folders, exams }: Props) {
         )
 
         return (
-          <div key={folder.id} className="mb-4 rounded-2xl bg-white p-5 shadow-sm">
-            <div className="mb-3 flex items-center justify-between">
+          <div key={folder.id} className="mb-4 rounded-2xl bg-white p-4 shadow-sm sm:p-5">
+            <div className="mb-3 flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
               <h3 className="font-bold">📁 {folder.name}</h3>
               <div className="text-sm text-slate-600">
                 {folderStats.total} deneme · Metin{' '}
@@ -86,7 +86,8 @@ export default function HistoryView({ folders, exams }: Props) {
                 {pct(folderStats.nukteBildim, folderStats.total)}
               </div>
             </div>
-            <table className="w-full text-sm">
+            <div className="overflow-x-auto">
+            <table className="w-full min-w-[22rem] text-sm">
               <thead>
                 <tr className="border-b border-slate-200 text-left text-slate-500">
                   <th className="py-1.5 font-medium">Sınav</th>
@@ -124,6 +125,7 @@ export default function HistoryView({ folders, exams }: Props) {
                 )}
               </tbody>
             </table>
+            </div>
           </div>
         )
       })}

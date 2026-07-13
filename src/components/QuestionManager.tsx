@@ -127,7 +127,7 @@ export default function QuestionManager({ folders, exams, onDataChanged }: Props
   }
 
   return (
-    <div className="mx-auto max-w-3xl p-6">
+    <div className="mx-auto max-w-3xl p-4 sm:p-6">
       <h2 className="mb-4 text-xl font-bold">Soru Yönetimi</h2>
 
       <div className="mb-6 rounded-2xl bg-white p-5 shadow-sm">
@@ -136,7 +136,7 @@ export default function QuestionManager({ folders, exams, onDataChanged }: Props
         </h3>
 
         {!editingId && (
-          <div className="mb-4 grid grid-cols-2 gap-3">
+          <div className="mb-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
             <div>
               <label className="mb-1 block text-sm text-slate-600">Klasör</label>
               <select

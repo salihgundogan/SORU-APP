@@ -77,8 +77,8 @@ export default function ExamDetail({ exam, onStartExam, onDeleteExam }: Props) {
   }
 
   return (
-    <div className="mx-auto max-w-3xl p-6">
-      <div className="mb-4 flex items-center justify-between">
+    <div className="mx-auto max-w-3xl p-4 sm:p-6">
+      <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h2 className="text-xl font-bold">📄 {exam.name}</h2>
           <p className="text-sm text-slate-500">

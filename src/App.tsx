@@ -30,6 +30,13 @@ export default function App() {
   const [exams, setExams] = useState<Exam[]>([])
   const [view, setView] = useState<View>({ type: 'welcome' })
   const [error, setError] = useState<string | null>(null)
+  const [sidebarOpen, setSidebarOpen] = useState(false)
+
+  // Mobilde bir görünüm seçilince çekmeceyi kapat.
+  const go = (v: View) => {
+    setView(v)
+    setSidebarOpen(false)
+  }
 
   const reload = useCallback(async () => {
     try {
@@ -70,7 +77,7 @@ export default function App() {
         alert('Bu sınavda hiç soru yok.')
         return
       }
-      setView({ type: 'quiz', questions: shuffle(questions), title: exam.name })
+      go({ type: 'quiz', questions: shuffle(questions), title: exam.name })
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err))
     }
@@ -84,7 +91,7 @@ export default function App() {
         alert('Bu klasörde hiç soru yok.')
         return
       }
-      setView({
+      go({
         type: 'quiz',
         questions: shuffle(questions),
         title: `${folder.name} (karışık)`,
@@ -127,19 +134,42 @@ export default function App() {
 
   return (
     <div className="flex h-screen bg-slate-100 text-slate-900">
+      {/* Mobil üst şerit */}
+      <header className="fixed inset-x-0 top-0 z-20 flex h-14 items-center gap-3 border-b border-slate-200 bg-white px-4 md:hidden">
+        <button
+          onClick={() => setSidebarOpen(true)}
+          className="rounded-lg p-1.5 text-2xl leading-none hover:bg-slate-100"
+          aria-label="Menüyü aç"
+        >
+          ☰
+        </button>
+        <h1 className="text-base font-bold">Ayet / Şiir Ezber</h1>
+      </header>
+
+      {/* Mobil çekmece arka planı */}
+      {sidebarOpen && (
+        <div
+          onClick={() => setSidebarOpen(false)}
+          className="fixed inset-0 z-30 bg-black/40 md:hidden"
+          aria-hidden
+        />
+      )}
+
       <Sidebar
+        isOpen={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
         folders={folders}
         exams={exams}
         onStartExam={startExamQuiz}
         onStartFolder={startFolderQuiz}
-        onOpenManage={() => setView({ type: 'manage' })}
-        onOpenImport={() => setView({ type: 'import' })}
-        onOpenExam={(exam) => setView({ type: 'exam', exam })}
+        onOpenManage={() => go({ type: 'manage' })}
+        onOpenImport={() => go({ type: 'import' })}
+        onOpenExam={(exam) => go({ type: 'exam', exam })}
         onDeleteFolder={removeFolder}
-        onOpenHistory={() => setView({ type: 'history' })}
+        onOpenHistory={() => go({ type: 'history' })}
         onDataChanged={reload}
       />
-      <main className="flex-1 overflow-y-auto">
+      <main className="flex-1 overflow-y-auto pt-14 md:pt-0">
         {error && (
           <div className="m-4 rounded-lg border border-red-300 bg-red-50 p-3 text-sm text-red-800">
             Hata: {error}

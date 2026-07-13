@@ -3,6 +3,8 @@ import type { Exam, Folder } from '../types'
 import { createExam, createFolder } from '../lib/api'
 
 interface Props {
+  isOpen: boolean
+  onClose: () => void
   folders: Folder[]
   exams: Exam[]
   onStartExam: (exam: Exam) => void
@@ -16,6 +18,8 @@ interface Props {
 }
 
 export default function Sidebar({
+  isOpen,
+  onClose,
   folders,
   exams,
   onStartExam,
@@ -62,9 +66,22 @@ export default function Sidebar({
   }
 
   return (
-    <aside className="flex w-72 shrink-0 flex-col border-r border-slate-200 bg-white">
+    <aside
+      className={`${
+        isOpen ? 'flex' : 'hidden md:flex'
+      } fixed inset-y-0 left-0 z-40 w-72 max-w-[85%] shrink-0 flex-col border-r border-slate-200 bg-white md:static md:z-auto md:max-w-none`}
+    >
       <div className="border-b border-slate-200 p-4">
-        <h2 className="text-lg font-bold">Ezber Testleri</h2>
+        <div className="flex items-center justify-between">
+          <h2 className="text-lg font-bold">Ezber Testleri</h2>
+          <button
+            onClick={onClose}
+            className="rounded-lg p-1 text-xl leading-none text-slate-500 hover:bg-slate-100 md:hidden"
+            aria-label="Menüyü kapat"
+          >
+            ✕
+          </button>
+        </div>
         <div className="mt-3 flex gap-2">
           <button
             onClick={onOpenManage}

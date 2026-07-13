@@ -73,7 +73,7 @@ export default function BulkImport({ folders, exams, onDataChanged }: Props) {
   }
 
   return (
-    <div className="mx-auto max-w-3xl p-6">
+    <div className="mx-auto max-w-3xl p-4 sm:p-6">
       <h2 className="mb-1 text-xl font-bold">Toplu Soru Ekle</h2>
       <p className="mb-4 text-sm text-slate-500">
         Aşağıdaki formata göre yapıştır; klasör ve sınavlar yoksa otomatik oluşturulur,
