@@ -67,8 +67,8 @@ export default function App() {
 
   if (!supabaseConfigured) {
     return (
-      <div className="flex h-screen items-center justify-center bg-slate-100 p-8">
-        <div className="max-w-lg rounded-xl border border-amber-300 bg-amber-50 p-6 text-slate-800">
+      <div className="flex h-screen items-center justify-center bg-stone-100 p-8">
+        <div className="max-w-lg rounded-xl border border-amber-300 bg-amber-50 p-6 text-stone-800">
           <h1 className="mb-2 text-lg font-bold">Supabase yapılandırması eksik</h1>
           <p className="text-sm leading-6">
             Proje kökündeki <code className="rounded bg-amber-100 px-1">.env</code>{' '}
@@ -173,15 +173,29 @@ export default function App() {
     }
   }
 
-  const showBackBar = view.type !== 'home' && view.type !== 'quiz'
+  // Odak modu: quiz sırasında yan panel ve üst şerit yok, dikkat dağıtan hiçbir şey kalmaz.
+  if (view.type === 'quiz') {
+    return (
+      <div className="min-h-dvh bg-stone-100 text-stone-900">
+        <Quiz
+          key={view.title + view.questions.map((q) => q.id).join(',')}
+          questions={view.questions}
+          title={view.title}
+          onExit={() => setView(view.returnTo)}
+        />
+      </div>
+    )
+  }
+
+  const showBackBar = view.type !== 'home'
 
   return (
-    <div className="flex h-screen bg-slate-100 text-slate-900">
+    <div className="flex h-screen bg-stone-100 text-stone-900">
       {/* Mobil üst şerit */}
-      <header className="fixed inset-x-0 top-0 z-20 flex h-14 items-center gap-3 border-b border-slate-200 bg-white px-4 md:hidden">
+      <header className="fixed inset-x-0 top-0 z-20 flex h-14 items-center gap-3 border-b border-stone-200 bg-white px-4 md:hidden">
         <button
           onClick={() => setSidebarOpen(true)}
-          className="rounded-lg p-1.5 text-2xl leading-none hover:bg-slate-100"
+          className="rounded-lg p-1.5 text-2xl leading-none hover:bg-stone-100"
           aria-label="Menüyü aç"
         >
           ☰
@@ -227,7 +241,7 @@ export default function App() {
           <div className="mx-auto max-w-3xl px-4 pt-4 sm:px-6">
             <button
               onClick={() => setView(parentOf(view))}
-              className="rounded-lg px-2 py-1 text-sm font-medium text-slate-500 hover:bg-slate-200 hover:text-slate-800"
+              className="rounded-lg px-2 py-1 text-sm font-medium text-stone-500 hover:bg-stone-200 hover:text-stone-800"
             >
               ← {backLabel(view)}
             </button>
@@ -271,14 +285,6 @@ export default function App() {
           />
         )}
         {view.type === 'history' && <HistoryView folders={folders} exams={exams} />}
-        {view.type === 'quiz' && (
-          <Quiz
-            key={view.title + view.questions.map((q) => q.id).join(',')}
-            questions={view.questions}
-            title={view.title}
-            onExit={() => setView(view.returnTo)}
-          />
-        )}
       </main>
     </div>
   )

@@ -18,23 +18,25 @@ function SonucButtons({ value, onChange }: SonucButtonsProps) {
     <div className="flex gap-2">
       <button
         onClick={() => onChange('bildim')}
-        className={`h-10 w-10 rounded-full text-lg font-bold transition ${
-          value === 'bildim'
-            ? 'bg-emerald-600 text-white ring-2 ring-emerald-300'
-            : 'bg-emerald-100 text-emerald-700 hover:bg-emerald-200'
-        }`}
+        aria-label="Bildim"
         title="Bildim"
+        className={`h-11 w-11 rounded-full text-xl font-bold transition-all ${
+          value === 'bildim'
+            ? 'scale-105 bg-emerald-600 text-white shadow-md shadow-emerald-200'
+            : 'bg-emerald-50 text-emerald-600 hover:bg-emerald-100'
+        }`}
       >
         ✓
       </button>
       <button
         onClick={() => onChange('bilemedim')}
-        className={`h-10 w-10 rounded-full text-lg font-bold transition ${
-          value === 'bilemedim'
-            ? 'bg-red-600 text-white ring-2 ring-red-300'
-            : 'bg-red-100 text-red-700 hover:bg-red-200'
-        }`}
+        aria-label="Bilemedim"
         title="Bilemedim"
+        className={`h-11 w-11 rounded-full text-xl font-bold transition-all ${
+          value === 'bilemedim'
+            ? 'scale-105 bg-rose-600 text-white shadow-md shadow-rose-200'
+            : 'bg-rose-50 text-rose-500 hover:bg-rose-100'
+        }`}
       >
         ✗
       </button>
@@ -102,147 +104,182 @@ export default function Quiz({ questions, title, onExit }: Props) {
 
   if (finished) {
     const correct = results.length - wrongQuestions.length
+    const pct = results.length > 0 ? Math.round((correct / results.length) * 100) : 0
+    const emoji = pct === 100 ? '🎉' : pct >= 70 ? '👏' : pct >= 40 ? '💪' : '📖'
     return (
-      <div className="flex h-full items-center justify-center p-8">
-        <div className="w-full max-w-lg rounded-2xl bg-white p-8 shadow-sm">
-          <h2 className="mb-1 text-xl font-bold">Test Bitti — {title}</h2>
-          <p className="mb-6 text-sm text-slate-500">
-            Yanlış sayılma kriteri: metin veya nükteden en az biri
-            &quot;bilemedim&quot;.
-          </p>
-          <div className="mb-6 flex gap-4">
-            <div className="flex-1 rounded-xl bg-emerald-50 p-4 text-center">
-              <div className="text-3xl font-bold text-emerald-700">{correct}</div>
-              <div className="text-sm text-emerald-700">Doğru</div>
-            </div>
-            <div className="flex-1 rounded-xl bg-red-50 p-4 text-center">
-              <div className="text-3xl font-bold text-red-700">
-                {wrongQuestions.length}
-              </div>
-              <div className="text-sm text-red-700">Yanlış</div>
-            </div>
+      <div className="flex min-h-dvh items-center justify-center p-6">
+        <div className="w-full max-w-md animate-fade-up rounded-3xl border border-stone-200/70 bg-white p-8 text-center shadow-sm">
+          <div className="text-5xl">{emoji}</div>
+          <h2 className="mt-3 text-xl font-bold">Test Bitti</h2>
+          <p className="text-sm text-stone-500">{title}</p>
+
+          <div className="my-5 text-5xl font-bold tracking-tight text-emerald-600">
+            %{pct}
           </div>
+
+          <div className="mb-6 flex justify-center gap-3">
+            <span className="rounded-full bg-emerald-50 px-4 py-1.5 text-sm font-medium text-emerald-700">
+              {correct} doğru
+            </span>
+            <span className="rounded-full bg-rose-50 px-4 py-1.5 text-sm font-medium text-rose-600">
+              {wrongQuestions.length} yanlış
+            </span>
+          </div>
+
           {saveError && (
-            <p className="mb-4 text-sm text-red-600">
+            <p className="mb-4 text-sm text-rose-600">
               Bazı sonuçlar kaydedilemedi: {saveError}
             </p>
           )}
+
           <div className="flex flex-col gap-2">
             {wrongQuestions.length > 0 && (
               <button
                 onClick={() => restart(wrongQuestions)}
-                className="rounded-lg bg-red-600 px-4 py-2.5 font-medium text-white hover:bg-red-500"
+                className="rounded-xl bg-rose-600 px-4 py-3 font-medium text-white transition hover:bg-rose-500 active:scale-[.99]"
               >
                 Yalnızca yanlışları tekrar dene ({wrongQuestions.length})
               </button>
             )}
             <button
               onClick={() => restart(questions)}
-              className="rounded-lg bg-slate-800 px-4 py-2.5 font-medium text-white hover:bg-slate-700"
+              className="rounded-xl bg-stone-800 px-4 py-3 font-medium text-white transition hover:bg-stone-700 active:scale-[.99]"
             >
               Tümünü tekrar dene ({questions.length})
             </button>
             <button
               onClick={onExit}
-              className="rounded-lg bg-slate-200 px-4 py-2.5 font-medium hover:bg-slate-300"
+              className="rounded-xl bg-stone-100 px-4 py-3 font-medium text-stone-600 transition hover:bg-stone-200"
             >
               Bitir
             </button>
           </div>
+
+          <p className="mt-5 text-xs text-stone-400">
+            Metin veya nükteden en az biri &quot;bilemedim&quot; ise soru yanlış sayılır.
+          </p>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="mx-auto max-w-3xl p-4 sm:p-6">
-      <div className="mb-4 flex items-center justify-between">
-        <h2 className="text-lg font-bold">{title}</h2>
-        <div className="text-sm text-slate-500">
-          Soru {index + 1} / {pool.length}
+    <div className="mx-auto flex min-h-dvh w-full max-w-2xl flex-col p-4 sm:p-6">
+      {/* Üst çubuk: çık + başlık + sayaç */}
+      <div className="mb-3 flex items-center gap-3">
+        <button
+          onClick={onExit}
+          aria-label="Testten çık"
+          title="Testten çık"
+          className="rounded-full p-2 leading-none text-stone-400 transition hover:bg-stone-200 hover:text-stone-700"
+        >
+          ✕
+        </button>
+        <div className="min-w-0 flex-1 truncate text-center text-sm font-semibold text-stone-600">
+          {title}
+        </div>
+        <div className="text-sm font-medium tabular-nums text-stone-400">
+          {index + 1}/{pool.length}
         </div>
       </div>
+
+      {/* İlerleme çubuğu */}
+      <div className="mb-6 h-1.5 overflow-hidden rounded-full bg-stone-200">
+        <div
+          className="h-full rounded-full bg-emerald-500 transition-all duration-500"
+          style={{ width: `${(index / pool.length) * 100}%` }}
+        />
+      </div>
+
       {saveError && (
-        <div className="mb-4 rounded-lg border border-red-300 bg-red-50 p-2 text-sm text-red-800">
+        <div className="mb-4 rounded-xl border border-rose-200 bg-rose-50 p-3 text-sm text-rose-700">
           Kayıt hatası: {saveError}
         </div>
       )}
 
-      {/* Üst şerit: metin parçaları */}
-      <div className="mb-4 rounded-2xl bg-white p-5 shadow-sm">
-        <div className="mb-3 flex items-center justify-between">
-          <h3 className="font-medium text-slate-600">Metin</h3>
+      {/* Metin kartı */}
+      <div
+        key={question.id}
+        className="mb-4 animate-fade-up rounded-2xl border border-stone-200/70 bg-white p-5 shadow-sm"
+      >
+        <div className="mb-4 flex items-center justify-between">
+          <h3 className="text-xs font-semibold tracking-widest text-stone-400 uppercase">
+            Metin
+          </h3>
           <SonucButtons value={metinSonuc} onChange={setMetinSonuc} />
         </div>
         <div className="flex flex-col gap-2">
-          {question.parcalar.map((parca, i) => (
-            <div
-              key={i}
-              dir="rtl"
-              className={`rounded-xl border p-4 text-right font-arabic text-2xl leading-loose ${
-                i < revealedCount
-                  ? 'border-slate-200 bg-slate-50'
-                  : 'border-dashed border-slate-200 bg-slate-100 text-transparent select-none'
-              }`}
-            >
-              {i < revealedCount ? parca : '•••'}
-            </div>
-          ))}
+          {question.parcalar.map((parca, i) =>
+            i < revealedCount ? (
+              <div
+                key={i}
+                dir="rtl"
+                className="animate-fade-up rounded-xl bg-stone-50 px-4 py-3 text-right font-arabic text-2xl leading-loose text-stone-800 sm:text-3xl sm:leading-loose"
+              >
+                {parca}
+              </div>
+            ) : (
+              <div
+                key={i}
+                className="rounded-xl border border-dashed border-stone-200 bg-stone-50/50 py-6"
+              />
+            ),
+          )}
         </div>
         {revealedCount < question.parcalar.length && (
           <button
             onClick={() => setRevealedCount(revealedCount + 1)}
-            className="mt-3 w-full rounded-lg bg-indigo-600 px-4 py-2 font-medium text-white hover:bg-indigo-500"
+            className="mt-4 w-full rounded-xl bg-stone-800 px-4 py-3 font-medium text-white transition hover:bg-stone-700 active:scale-[.99]"
           >
-            Sonraki Parçayı Göster ({revealedCount} / {question.parcalar.length})
+            Sonraki Parçayı Göster
+            <span className="ml-2 text-sm text-stone-400">
+              {revealedCount}/{question.parcalar.length}
+            </span>
           </button>
         )}
       </div>
 
-      {/* Alt şerit: nükte */}
-      <div className="mb-6 rounded-2xl bg-white p-5 shadow-sm">
-        <div className="mb-3 flex items-center justify-between">
-          <h3 className="font-medium text-slate-600">Nükte</h3>
+      {/* Nükte kartı */}
+      <div className="mb-6 rounded-2xl border border-stone-200/70 bg-white p-5 shadow-sm">
+        <div className="mb-4 flex items-center justify-between">
+          <h3 className="text-xs font-semibold tracking-widest text-stone-400 uppercase">
+            Nükte
+          </h3>
           <SonucButtons value={nukteSonuc} onChange={setNukteSonuc} />
         </div>
         {nukteOpen ? (
-          <div className="rounded-xl border border-slate-200 bg-amber-50 p-4 leading-7">
+          <div className="animate-fade-up rounded-xl bg-amber-50 px-4 py-3 leading-7 text-stone-800">
             {question.nukte}
           </div>
         ) : (
           <button
             onClick={() => setNukteOpen(true)}
-            className="w-full rounded-xl border border-dashed border-slate-300 bg-slate-50 p-4 text-slate-500 hover:bg-slate-100"
+            className="w-full rounded-xl border border-dashed border-stone-300 bg-stone-50 px-4 py-4 text-stone-500 transition hover:bg-stone-100"
           >
-            Nükteyi göstermek için tıkla
+            💡 Nükteyi göstermek için tıkla
           </button>
         )}
       </div>
 
-      <div className="flex items-center gap-3">
+      {/* Sonraki soru */}
+      <div className="mt-auto pb-2">
         <button
           onClick={nextQuestion}
           disabled={!bothSelected}
-          className={`flex-1 rounded-lg px-4 py-3 font-medium transition ${
+          className={`w-full rounded-xl px-4 py-3.5 text-base font-semibold transition ${
             bothSelected
-              ? 'bg-slate-800 text-white hover:bg-slate-700'
-              : 'cursor-not-allowed bg-slate-200 text-slate-400'
+              ? 'bg-emerald-600 text-white shadow-md shadow-emerald-100 hover:bg-emerald-500 active:scale-[.99]'
+              : 'cursor-not-allowed bg-stone-200 text-stone-400'
           }`}
         >
-          {isLast ? 'Testi Bitir' : 'Sonraki Soru'}
+          {isLast ? 'Testi Bitir' : 'Sonraki Soru →'}
         </button>
-        <button
-          onClick={onExit}
-          className="rounded-lg bg-slate-200 px-4 py-3 text-sm hover:bg-slate-300"
-        >
-          Testten Çık
-        </button>
+        {!bothSelected && (
+          <p className="mt-2 text-center text-xs text-stone-400">
+            Devam etmek için hem metin hem nükte için ✓ veya ✗ seç.
+          </p>
+        )}
       </div>
-      {!bothSelected && (
-        <p className="mt-2 text-center text-xs text-slate-400">
-          Devam etmek için hem metin hem nükte için ✓ veya ✗ seç.
-        </p>
-      )}
     </div>
   )
 }

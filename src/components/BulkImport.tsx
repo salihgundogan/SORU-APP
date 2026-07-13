@@ -73,48 +73,48 @@ export default function BulkImport({ folders, exams, onDataChanged }: Props) {
   }
 
   return (
-    <div className="mx-auto max-w-3xl p-4 sm:p-6">
+    <div className="mx-auto max-w-3xl animate-fade-up p-4 sm:p-6">
       <h2 className="mb-1 text-xl font-bold">Toplu Soru Ekle</h2>
-      <p className="mb-4 text-sm text-slate-500">
+      <p className="mb-4 text-sm text-stone-500">
         Aşağıdaki formata göre yapıştır; klasör ve sınavlar yoksa otomatik oluşturulur,
         varsa mevcut olanlara eklenir.
       </p>
 
-      <details className="mb-4 rounded-xl border border-slate-200 bg-white">
-        <summary className="cursor-pointer px-4 py-3 font-medium text-slate-700">
+      <details className="mb-4 rounded-xl border border-stone-200 bg-white">
+        <summary className="cursor-pointer px-4 py-3 font-medium text-stone-700">
           📋 Format kuralları
         </summary>
-        <div className="border-t border-slate-200 px-4 py-3 text-sm leading-6 text-slate-600">
+        <div className="border-t border-stone-200 px-4 py-3 text-sm leading-6 text-stone-600">
           <ul className="mb-3 list-disc pl-5">
             <li>
-              İlk satır <code className="rounded bg-slate-100 px-1">KLASÖR: klasör adı</code>{' '}
+              İlk satır <code className="rounded bg-stone-100 px-1">KLASÖR: klasör adı</code>{' '}
               olmalı (yapıştırma başına tek klasör).
             </li>
             <li>
-              <code className="rounded bg-slate-100 px-1">SINAV: sınav adı</code> satırı yeni
+              <code className="rounded bg-stone-100 px-1">SINAV: sınav adı</code> satırı yeni
               bir sınav bölümü başlatır; aynı yapıştırmada birden çok sınav olabilir.
             </li>
             <li>
-              Her soru <code className="rounded bg-slate-100 px-1">1.</code> gibi numarayla
+              Her soru <code className="rounded bg-stone-100 px-1">1.</code> gibi numarayla
               başlar; numaradan sonraki metin sorunun metnidir (alt satırlara taşabilir).
             </li>
             <li>
-              <code className="rounded bg-slate-100 px-1">NÜKTE:</code> (veya{' '}
-              <code className="rounded bg-slate-100 px-1">Mahall-i istişhâd:</code>) satırı o
+              <code className="rounded bg-stone-100 px-1">NÜKTE:</code> (veya{' '}
+              <code className="rounded bg-stone-100 px-1">Mahall-i istişhâd:</code>) satırı o
               sorunun nüktesidir — her soruda zorunlu.
             </li>
             <li>
-              Metinde <code className="rounded bg-slate-100 px-1">/</code> varsa parçalar
+              Metinde <code className="rounded bg-stone-100 px-1">/</code> varsa parçalar
               oradan bölünür; yoksa otomatik olarak ~4 kelimelik parçalara bölünür.
             </li>
             <li>
-              <code className="rounded bg-slate-100 px-1">**kalın**</code> işaretleri,{' '}
-              <code className="rounded bg-slate-100 px-1">---</code> ve{' '}
-              <code className="rounded bg-slate-100 px-1">##</code> başlık satırları görmezden
+              <code className="rounded bg-stone-100 px-1">**kalın**</code> işaretleri,{' '}
+              <code className="rounded bg-stone-100 px-1">---</code> ve{' '}
+              <code className="rounded bg-stone-100 px-1">##</code> başlık satırları görmezden
               gelinir — Word/ChatGPT çıktısını olduğu gibi yapıştırabilirsin.
             </li>
           </ul>
-          <pre className="overflow-x-auto rounded-lg bg-slate-50 p-3 text-xs leading-5">
+          <pre className="overflow-x-auto rounded-lg bg-stone-50 p-3 text-xs leading-5">
             {FORMAT_EXAMPLE}
           </pre>
         </div>
@@ -129,7 +129,7 @@ export default function BulkImport({ folders, exams, onDataChanged }: Props) {
         }}
         rows={14}
         placeholder={'KLASÖR: …\nSINAV: …\n\n1. metin\nNÜKTE: …'}
-        className="mb-4 w-full rounded-xl border border-slate-300 p-3 font-mono text-sm"
+        className="mb-4 w-full rounded-xl border border-stone-300 p-3 font-mono text-sm"
       />
 
       {result && result.errors.length > 0 && (
@@ -157,13 +157,13 @@ export default function BulkImport({ folders, exams, onDataChanged }: Props) {
                 {exam.questions.map((q, j) => (
                   <li
                     key={j}
-                    className="rounded-lg bg-white/70 px-3 py-1.5 text-sm text-slate-700"
+                    className="rounded-lg bg-white/70 px-3 py-1.5 text-sm text-stone-700"
                   >
                     <span dir="rtl" className="font-arabic text-base">
                       {q.parcalar[0]}
                       {q.parcalar.length > 1 ? ' …' : ''}
                     </span>
-                    <span className="text-xs text-slate-500">
+                    <span className="text-xs text-stone-500">
                       {' '}
                       · {q.parcalar.length} parça · {q.nukte.slice(0, 60)}
                       {q.nukte.length > 60 ? '…' : ''}
@@ -188,7 +188,7 @@ export default function BulkImport({ folders, exams, onDataChanged }: Props) {
       <button
         onClick={() => void save()}
         disabled={busy || !result?.data}
-        className="rounded-lg bg-slate-800 px-5 py-2.5 font-medium text-white hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-40"
+        className="rounded-lg bg-stone-800 px-5 py-2.5 font-medium text-white hover:bg-stone-700 disabled:cursor-not-allowed disabled:opacity-40"
       >
         {busy
           ? 'Kaydediliyor…'

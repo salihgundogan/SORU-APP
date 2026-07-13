@@ -71,20 +71,20 @@ export default function Sidebar({
     <aside
       className={`${
         isOpen ? 'flex' : 'hidden md:flex'
-      } fixed inset-y-0 left-0 z-40 w-72 max-w-[85%] shrink-0 flex-col border-r border-slate-200 bg-white md:static md:z-auto md:max-w-none`}
+      } fixed inset-y-0 left-0 z-40 w-72 max-w-[85%] shrink-0 flex-col border-r border-stone-200 bg-white md:static md:z-auto md:max-w-none`}
     >
-      <div className="border-b border-slate-200 p-4">
+      <div className="border-b border-stone-200 p-4">
         <div className="flex items-center justify-between">
           <button
             onClick={onOpenHome}
-            className="text-lg font-bold hover:text-indigo-700"
+            className="text-lg font-bold hover:text-emerald-700"
             title="Ana sayfaya dön"
           >
             🏠 Ezber Testleri
           </button>
           <button
             onClick={onClose}
-            className="rounded-lg p-1 text-xl leading-none text-slate-500 hover:bg-slate-100 md:hidden"
+            className="rounded-lg p-1 text-xl leading-none text-stone-500 hover:bg-stone-100 md:hidden"
             aria-label="Menüyü kapat"
           >
             ✕
@@ -93,20 +93,20 @@ export default function Sidebar({
         <div className="mt-3 flex gap-2">
           <button
             onClick={onOpenManage}
-            className="flex-1 rounded-lg bg-slate-800 px-3 py-1.5 text-sm text-white hover:bg-slate-700"
+            className="flex-1 rounded-lg bg-stone-800 px-3 py-1.5 text-sm text-white hover:bg-stone-700"
           >
             Soru Yönetimi
           </button>
           <button
             onClick={onOpenHistory}
-            className="flex-1 rounded-lg bg-slate-200 px-3 py-1.5 text-sm hover:bg-slate-300"
+            className="flex-1 rounded-lg bg-stone-200 px-3 py-1.5 text-sm hover:bg-stone-300"
           >
             Geçmiş
           </button>
         </div>
         <button
           onClick={onOpenImport}
-          className="mt-2 w-full rounded-lg bg-indigo-600 px-3 py-1.5 text-sm text-white hover:bg-indigo-500"
+          className="mt-2 w-full rounded-lg bg-emerald-600 px-3 py-1.5 text-sm text-white hover:bg-emerald-500"
         >
           📥 Toplu Soru Ekle
         </button>
@@ -120,29 +120,29 @@ export default function Sidebar({
             <div key={folder.id} className="mb-1">
               <button
                 onClick={() => toggleFolder(folder.id)}
-                className="flex w-full items-center justify-between rounded-lg px-3 py-2 text-left font-medium hover:bg-slate-100"
+                className="flex w-full items-center justify-between rounded-lg px-3 py-2 text-left font-medium hover:bg-stone-100"
               >
                 <span>
                   {isOpen ? '📂' : '📁'} {folder.name}
                 </span>
-                <span className="text-xs text-slate-400">{isOpen ? '▾' : '▸'}</span>
+                <span className="text-xs text-stone-400">{isOpen ? '▾' : '▸'}</span>
               </button>
               {isOpen && (
-                <div className="ml-4 border-l border-slate-200 pl-2">
+                <div className="ml-4 border-l border-stone-200 pl-2">
                   <button
                     onClick={() => onStartFolder(folder)}
-                    className="mt-1 w-full rounded-lg bg-indigo-50 px-3 py-1.5 text-left text-sm font-medium text-indigo-700 hover:bg-indigo-100"
+                    className="mt-1 w-full rounded-lg bg-emerald-50 px-3 py-1.5 text-left text-sm font-medium text-emerald-700 hover:bg-emerald-100"
                   >
                     🔀 Tamamından karışık test
                   </button>
                   {folderExams.map((exam) => (
                     <div
                       key={exam.id}
-                      className="mt-1 flex items-center justify-between rounded-lg px-3 py-1.5 hover:bg-slate-100"
+                      className="mt-1 flex items-center justify-between rounded-lg px-3 py-1.5 hover:bg-stone-100"
                     >
                       <button
                         onClick={() => onOpenExam(exam)}
-                        className="min-w-0 flex-1 truncate text-left text-sm hover:text-indigo-700"
+                        className="min-w-0 flex-1 truncate text-left text-sm hover:text-emerald-700"
                         title="Soruları görüntüle / düzenle"
                       >
                         📄 {exam.name}
@@ -156,7 +156,7 @@ export default function Sidebar({
                     </div>
                   ))}
                   {folderExams.length === 0 && (
-                    <p className="px-3 py-1 text-xs text-slate-400">Sınav yok</p>
+                    <p className="px-3 py-1 text-xs text-stone-400">Sınav yok</p>
                   )}
                   {addingExamFor === folder.id ? (
                     <div className="mt-1 flex gap-1 px-1">
@@ -166,11 +166,11 @@ export default function Sidebar({
                         onChange={(e) => setNewExamName(e.target.value)}
                         onKeyDown={(e) => e.key === 'Enter' && void submitExam(folder.id)}
                         placeholder="Sınav adı"
-                        className="w-full rounded-md border border-slate-300 px-2 py-1 text-sm"
+                        className="w-full rounded-md border border-stone-300 px-2 py-1 text-sm"
                       />
                       <button
                         onClick={() => void submitExam(folder.id)}
-                        className="rounded-md bg-slate-800 px-2 text-sm text-white"
+                        className="rounded-md bg-stone-800 px-2 text-sm text-white"
                       >
                         +
                       </button>
@@ -181,7 +181,7 @@ export default function Sidebar({
                         setAddingExamFor(folder.id)
                         setNewExamName('')
                       }}
-                      className="mt-1 w-full rounded-lg px-3 py-1 text-left text-xs text-slate-500 hover:bg-slate-100"
+                      className="mt-1 w-full rounded-lg px-3 py-1 text-left text-xs text-stone-500 hover:bg-stone-100"
                     >
                       + Yeni sınav ekle
                     </button>
@@ -206,11 +206,11 @@ export default function Sidebar({
               onChange={(e) => setNewFolderName(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && void submitFolder()}
               placeholder="Klasör adı (örn: 1. Hafta)"
-              className="w-full rounded-md border border-slate-300 px-2 py-1 text-sm"
+              className="w-full rounded-md border border-stone-300 px-2 py-1 text-sm"
             />
             <button
               onClick={() => void submitFolder()}
-              className="rounded-md bg-slate-800 px-2 text-sm text-white"
+              className="rounded-md bg-stone-800 px-2 text-sm text-white"
             >
               +
             </button>
@@ -221,7 +221,7 @@ export default function Sidebar({
               setAddingFolder(true)
               setNewFolderName('')
             }}
-            className="mt-2 w-full rounded-lg border border-dashed border-slate-300 px-3 py-2 text-sm text-slate-500 hover:bg-slate-50"
+            className="mt-2 w-full rounded-lg border border-dashed border-stone-300 px-3 py-2 text-sm text-stone-500 hover:bg-stone-50"
           >
             + Yeni klasör ekle
           </button>

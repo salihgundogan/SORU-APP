@@ -24,18 +24,18 @@ export default function FolderPage({
   )
 
   return (
-    <div className="mx-auto max-w-3xl p-4 sm:p-6">
+    <div className="mx-auto max-w-3xl animate-fade-up p-4 sm:p-6">
       <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-xl font-bold">📂 {folder.name}</h1>
-          <p className="text-sm text-slate-500">
+          <p className="text-sm text-stone-500">
             {folderExams.length} sınav · {questionTotal} soru
           </p>
         </div>
         {questionTotal > 0 && (
           <button
             onClick={() => onStartFolder(folder)}
-            className="shrink-0 rounded-lg bg-indigo-600 px-4 py-2 font-medium text-white hover:bg-indigo-500"
+            className="shrink-0 rounded-xl bg-stone-800 px-4 py-2.5 font-medium text-white transition hover:bg-stone-700 active:scale-[.99]"
           >
             🔀 Tamamından Karışık Test
           </button>
@@ -43,7 +43,7 @@ export default function FolderPage({
       </div>
 
       {folderExams.length === 0 ? (
-        <p className="rounded-xl bg-white p-6 text-center text-sm text-slate-400 shadow-sm">
+        <p className="rounded-xl bg-white p-6 text-center text-sm text-stone-400 shadow-sm">
           Bu klasörde henüz sınav yok — soldaki menüden ekleyebilirsin.
         </p>
       ) : (
@@ -51,20 +51,23 @@ export default function FolderPage({
           {folderExams.map((exam) => {
             const count = questionCounts.get(exam.id) ?? 0
             return (
-              <div key={exam.id} className="rounded-2xl bg-white p-4 shadow-sm">
+              <div
+                key={exam.id}
+                className="rounded-2xl border border-stone-200/70 bg-white p-4 shadow-sm transition-all hover:shadow-md"
+              >
                 <div className="mb-1 text-lg font-semibold">📄 {exam.name}</div>
-                <p className="mb-3 text-sm text-slate-500">{count} soru</p>
+                <p className="mb-3 text-sm text-stone-500">{count} soru</p>
                 <div className="flex gap-2">
                   <button
                     onClick={() => onStartExam(exam)}
                     disabled={count === 0}
-                    className="flex-1 rounded-lg bg-emerald-600 px-3 py-2 text-sm font-medium text-white hover:bg-emerald-500 disabled:cursor-not-allowed disabled:opacity-40"
+                    className="flex-1 rounded-xl bg-emerald-600 px-3 py-2 text-sm font-medium text-white transition hover:bg-emerald-500 active:scale-[.99] disabled:cursor-not-allowed disabled:opacity-40"
                   >
                     ▶ Test
                   </button>
                   <button
                     onClick={() => onOpenExam(exam)}
-                    className="flex-1 rounded-lg bg-slate-100 px-3 py-2 text-sm font-medium hover:bg-slate-200"
+                    className="flex-1 rounded-xl bg-stone-100 px-3 py-2 text-sm font-medium text-stone-700 transition hover:bg-stone-200"
                   >
                     Sorular
                   </button>

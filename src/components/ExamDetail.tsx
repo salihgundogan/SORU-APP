@@ -77,11 +77,11 @@ export default function ExamDetail({ exam, onStartExam, onDeleteExam }: Props) {
   }
 
   return (
-    <div className="mx-auto max-w-3xl p-4 sm:p-6">
+    <div className="mx-auto max-w-3xl animate-fade-up p-4 sm:p-6">
       <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h2 className="text-xl font-bold">📄 {exam.name}</h2>
-          <p className="text-sm text-slate-500">
+          <p className="text-sm text-stone-500">
             {questions === null ? 'Yükleniyor…' : `${questions.length} soru`} — düzenlemek
             için soruya tıkla.
           </p>
@@ -118,7 +118,7 @@ export default function ExamDetail({ exam, onStartExam, onDeleteExam }: Props) {
       )}
 
       {questions?.length === 0 && (
-        <p className="rounded-xl bg-white p-6 text-center text-slate-400 shadow-sm">
+        <p className="rounded-xl bg-white p-6 text-center text-stone-400 shadow-sm">
           Bu sınavda henüz soru yok — "Soru Yönetimi" veya "Toplu Soru Ekle" ile
           ekleyebilirsin.
         </p>
@@ -130,37 +130,37 @@ export default function ExamDetail({ exam, onStartExam, onDeleteExam }: Props) {
           <div
             key={q.id}
             className={`mb-3 rounded-2xl bg-white shadow-sm transition ${
-              isEditing ? 'ring-2 ring-indigo-300' : ''
+              isEditing ? 'ring-2 ring-emerald-300' : ''
             }`}
           >
             {!isEditing ? (
               <button
                 onClick={() => startEdit(q)}
-                className="block w-full rounded-2xl p-4 text-left hover:bg-slate-50"
+                className="block w-full rounded-2xl p-4 text-left hover:bg-stone-50"
               >
                 <div className="mb-1 flex items-baseline justify-between gap-3">
-                  <span className="shrink-0 text-xs font-medium text-slate-400">
+                  <span className="shrink-0 text-xs font-medium text-stone-400">
                     Soru {qi + 1} · {q.parcalar.length} parça
                   </span>
-                  <span className="text-xs text-indigo-500">Düzenle ✏️</span>
+                  <span className="text-xs text-emerald-500">Düzenle ✏️</span>
                 </div>
                 <p dir="rtl" className="mb-1 text-right font-arabic text-xl leading-relaxed">
                   {q.parcalar.join(' ')}
                 </p>
-                <p className="text-sm text-slate-500">💡 {q.nukte}</p>
+                <p className="text-sm text-stone-500">💡 {q.nukte}</p>
               </button>
             ) : (
               <div className="p-4">
                 <div className="mb-2 flex items-center justify-between">
-                  <span className="text-sm font-medium text-indigo-700">
+                  <span className="text-sm font-medium text-emerald-700">
                     Soru {qi + 1} düzenleniyor
                   </span>
                 </div>
 
-                <label className="mb-1 block text-sm text-slate-600">Parçalar</label>
+                <label className="mb-1 block text-sm text-stone-600">Parçalar</label>
                 {parcalar.map((p, i) => (
                   <div key={i} className="mb-2 flex items-start gap-2">
-                    <span className="mt-2 w-14 shrink-0 text-xs text-slate-500">
+                    <span className="mt-2 w-14 shrink-0 text-xs text-stone-500">
                       Parça {i + 1}
                     </span>
                     <textarea
@@ -170,12 +170,12 @@ export default function ExamDetail({ exam, onStartExam, onDeleteExam }: Props) {
                         setParcalar(parcalar.map((x, j) => (j === i ? e.target.value : x)))
                       }
                       rows={2}
-                      className="w-full rounded-lg border border-slate-300 px-3 py-2 text-right font-arabic text-xl leading-relaxed"
+                      className="w-full rounded-lg border border-stone-300 px-3 py-2 text-right font-arabic text-xl leading-relaxed"
                     />
                     <button
                       onClick={() => setParcalar(parcalar.filter((_, j) => j !== i))}
                       disabled={parcalar.length <= 1}
-                      className="mt-1 rounded-md px-2 py-1 text-slate-400 hover:bg-red-50 hover:text-red-600 disabled:opacity-30"
+                      className="mt-1 rounded-md px-2 py-1 text-stone-400 hover:bg-red-50 hover:text-red-600 disabled:opacity-30"
                       title="Parçayı sil"
                     >
                       🗑
@@ -184,31 +184,31 @@ export default function ExamDetail({ exam, onStartExam, onDeleteExam }: Props) {
                 ))}
                 <button
                   onClick={() => setParcalar([...parcalar, ''])}
-                  className="mb-3 rounded-lg border border-dashed border-slate-300 px-3 py-1.5 text-sm text-slate-500 hover:bg-slate-50"
+                  className="mb-3 rounded-lg border border-dashed border-stone-300 px-3 py-1.5 text-sm text-stone-500 hover:bg-stone-50"
                 >
                   + Parça Ekle
                 </button>
 
-                <label className="mb-1 block text-sm text-slate-600">Nükte</label>
+                <label className="mb-1 block text-sm text-stone-600">Nükte</label>
                 <textarea
                   value={nukte}
                   onChange={(e) => setNukte(e.target.value)}
                   rows={2}
-                  className="mb-3 w-full rounded-lg border border-slate-300 px-3 py-2"
+                  className="mb-3 w-full rounded-lg border border-stone-300 px-3 py-2"
                 />
 
                 <div className="flex gap-2">
                   <button
                     onClick={() => void save(q)}
                     disabled={busy}
-                    className="rounded-lg bg-slate-800 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700 disabled:opacity-50"
+                    className="rounded-lg bg-stone-800 px-4 py-2 text-sm font-medium text-white hover:bg-stone-700 disabled:opacity-50"
                   >
                     {busy ? 'Kaydediliyor…' : 'Kaydet'}
                   </button>
                   <button
                     onClick={cancelEdit}
                     disabled={busy}
-                    className="rounded-lg bg-slate-200 px-4 py-2 text-sm hover:bg-slate-300"
+                    className="rounded-lg bg-stone-200 px-4 py-2 text-sm hover:bg-stone-300"
                   >
                     Vazgeç
                   </button>

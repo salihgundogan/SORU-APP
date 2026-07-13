@@ -127,7 +127,7 @@ export default function QuestionManager({ folders, exams, onDataChanged }: Props
   }
 
   return (
-    <div className="mx-auto max-w-3xl p-4 sm:p-6">
+    <div className="mx-auto max-w-3xl animate-fade-up p-4 sm:p-6">
       <h2 className="mb-4 text-xl font-bold">Soru Yönetimi</h2>
 
       <div className="mb-6 rounded-2xl bg-white p-5 shadow-sm">
@@ -138,14 +138,14 @@ export default function QuestionManager({ folders, exams, onDataChanged }: Props
         {!editingId && (
           <div className="mb-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
             <div>
-              <label className="mb-1 block text-sm text-slate-600">Klasör</label>
+              <label className="mb-1 block text-sm text-stone-600">Klasör</label>
               <select
                 value={folderId}
                 onChange={(e) => {
                   setFolderId(e.target.value)
                   setExamId(e.target.value === NEW ? NEW : '')
                 }}
-                className="w-full rounded-lg border border-slate-300 px-3 py-2"
+                className="w-full rounded-lg border border-stone-300 px-3 py-2"
               >
                 <option value="">Seç…</option>
                 {folders.map((f) => (
@@ -160,17 +160,17 @@ export default function QuestionManager({ folders, exams, onDataChanged }: Props
                   value={newFolderName}
                   onChange={(e) => setNewFolderName(e.target.value)}
                   placeholder="Yeni klasör adı"
-                  className="mt-2 w-full rounded-lg border border-slate-300 px-3 py-2"
+                  className="mt-2 w-full rounded-lg border border-stone-300 px-3 py-2"
                 />
               )}
             </div>
             <div>
-              <label className="mb-1 block text-sm text-slate-600">Sınav</label>
+              <label className="mb-1 block text-sm text-stone-600">Sınav</label>
               <select
                 value={examId}
                 onChange={(e) => setExamId(e.target.value)}
                 disabled={!folderId || folderId === NEW}
-                className="w-full rounded-lg border border-slate-300 px-3 py-2 disabled:bg-slate-100"
+                className="w-full rounded-lg border border-stone-300 px-3 py-2 disabled:bg-stone-100"
               >
                 <option value="">Seç…</option>
                 {folderExams.map((e) => (
@@ -185,19 +185,19 @@ export default function QuestionManager({ folders, exams, onDataChanged }: Props
                   value={newExamName}
                   onChange={(e) => setNewExamName(e.target.value)}
                   placeholder="Yeni sınav adı"
-                  className="mt-2 w-full rounded-lg border border-slate-300 px-3 py-2"
+                  className="mt-2 w-full rounded-lg border border-stone-300 px-3 py-2"
                 />
               )}
             </div>
           </div>
         )}
 
-        <label className="mb-1 block text-sm text-slate-600">
+        <label className="mb-1 block text-sm text-stone-600">
           Metin parçaları (sırayla)
         </label>
         {parcalar.map((p, i) => (
           <div key={i} className="mb-2 flex items-start gap-2">
-            <span className="mt-2 w-16 shrink-0 text-sm text-slate-500">
+            <span className="mt-2 w-16 shrink-0 text-sm text-stone-500">
               Parça {i + 1}
             </span>
             <textarea
@@ -207,12 +207,12 @@ export default function QuestionManager({ folders, exams, onDataChanged }: Props
                 setParcalar(parcalar.map((x, j) => (j === i ? e.target.value : x)))
               }
               rows={2}
-              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-right font-arabic text-xl leading-relaxed"
+              className="w-full rounded-lg border border-stone-300 px-3 py-2 text-right font-arabic text-xl leading-relaxed"
             />
             <button
               onClick={() => setParcalar(parcalar.filter((_, j) => j !== i))}
               disabled={parcalar.length <= 1}
-              className="mt-1 rounded-md px-2 py-1 text-slate-400 hover:bg-red-50 hover:text-red-600 disabled:opacity-30"
+              className="mt-1 rounded-md px-2 py-1 text-stone-400 hover:bg-red-50 hover:text-red-600 disabled:opacity-30"
               title="Parçayı sil"
             >
               🗑
@@ -221,34 +221,34 @@ export default function QuestionManager({ folders, exams, onDataChanged }: Props
         ))}
         <button
           onClick={() => setParcalar([...parcalar, ''])}
-          className="mb-4 rounded-lg border border-dashed border-slate-300 px-3 py-1.5 text-sm text-slate-500 hover:bg-slate-50"
+          className="mb-4 rounded-lg border border-dashed border-stone-300 px-3 py-1.5 text-sm text-stone-500 hover:bg-stone-50"
         >
           + Parça Ekle
         </button>
 
-        <label className="mb-1 block text-sm text-slate-600">Nükte</label>
+        <label className="mb-1 block text-sm text-stone-600">Nükte</label>
         <textarea
           value={nukte}
           onChange={(e) => setNukte(e.target.value)}
           rows={2}
           placeholder="Bu metin neye misaldir?"
-          className="mb-4 w-full rounded-lg border border-slate-300 px-3 py-2"
+          className="mb-4 w-full rounded-lg border border-stone-300 px-3 py-2"
         />
 
-        {message && <p className="mb-3 text-sm text-indigo-700">{message}</p>}
+        {message && <p className="mb-3 text-sm text-emerald-700">{message}</p>}
 
         <div className="flex gap-2">
           <button
             onClick={() => void save()}
             disabled={busy}
-            className="rounded-lg bg-slate-800 px-5 py-2 font-medium text-white hover:bg-slate-700 disabled:opacity-50"
+            className="rounded-lg bg-stone-800 px-5 py-2 font-medium text-white hover:bg-stone-700 disabled:opacity-50"
           >
             {busy ? 'Kaydediliyor…' : editingId ? 'Güncelle' : 'Kaydet'}
           </button>
           {editingId && (
             <button
               onClick={resetForm}
-              className="rounded-lg bg-slate-200 px-5 py-2 hover:bg-slate-300"
+              className="rounded-lg bg-stone-200 px-5 py-2 hover:bg-stone-300"
             >
               Vazgeç
             </button>
@@ -262,28 +262,28 @@ export default function QuestionManager({ folders, exams, onDataChanged }: Props
             Bu sınavdaki sorular ({questions.length})
           </h3>
           {questions.length === 0 && (
-            <p className="text-sm text-slate-400">Henüz soru yok.</p>
+            <p className="text-sm text-stone-400">Henüz soru yok.</p>
           )}
           {questions.map((q) => (
             <div
               key={q.id}
-              className="mb-2 flex items-start justify-between gap-3 rounded-xl border border-slate-200 p-3"
+              className="mb-2 flex items-start justify-between gap-3 rounded-xl border border-stone-200 p-3"
             >
               <div className="min-w-0 flex-1">
                 <p
                   dir="rtl"
-                  className="truncate text-right font-arabic text-lg text-slate-800"
+                  className="truncate text-right font-arabic text-lg text-stone-800"
                 >
                   {q.parcalar[0]}
                 </p>
-                <p className="mt-1 truncate text-sm text-slate-500">
+                <p className="mt-1 truncate text-sm text-stone-500">
                   {q.parcalar.length} parça — {q.nukte}
                 </p>
               </div>
               <div className="flex shrink-0 gap-1">
                 <button
                   onClick={() => startEdit(q)}
-                  className="rounded-md bg-slate-100 px-2 py-1 text-sm hover:bg-slate-200"
+                  className="rounded-md bg-stone-100 px-2 py-1 text-sm hover:bg-stone-200"
                 >
                   Düzenle
                 </button>
