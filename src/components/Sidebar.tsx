@@ -1,0 +1,183 @@
+import { useState } from 'react'
+import type { Exam, Folder } from '../types'
+import { createExam, createFolder } from '../lib/api'
+
+interface Props {
+  folders: Folder[]
+  exams: Exam[]
+  onStartExam: (exam: Exam) => void
+  onStartFolder: (folder: Folder) => void
+  onOpenManage: () => void
+  onOpenHistory: () => void
+  onDataChanged: () => Promise<void>
+}
+
+export default function Sidebar({
+  folders,
+  exams,
+  onStartExam,
+  onStartFolder,
+  onOpenManage,
+  onOpenHistory,
+  onDataChanged,
+}: Props) {
+  const [openFolders, setOpenFolders] = useState<Set<string>>(new Set())
+  const [addingFolder, setAddingFolder] = useState(false)
+  const [newFolderName, setNewFolderName] = useState('')
+  const [addingExamFor, setAddingExamFor] = useState<string | null>(null)
+  const [newExamName, setNewExamName] = useState('')
+
+  const toggleFolder = (id: string) => {
+    setOpenFolders((prev) => {
+      const next = new Set(prev)
+      if (next.has(id)) next.delete(id)
+      else next.add(id)
+      return next
+    })
+  }
+
+  const submitFolder = async () => {
+    const name = newFolderName.trim()
+    if (!name) return
+    await createFolder(name)
+    setNewFolderName('')
+    setAddingFolder(false)
+    await onDataChanged()
+  }
+
+  const submitExam = async (folderId: string) => {
+    const name = newExamName.trim()
+    if (!name) return
+    await createExam(folderId, name)
+    setNewExamName('')
+    setAddingExamFor(null)
+    setOpenFolders((prev) => new Set(prev).add(folderId))
+    await onDataChanged()
+  }
+
+  return (
+    <aside className="flex w-72 shrink-0 flex-col border-r border-slate-200 bg-white">
+      <div className="border-b border-slate-200 p-4">
+        <h2 className="text-lg font-bold">Ezber Testleri</h2>
+        <div className="mt-3 flex gap-2">
+          <button
+            onClick={onOpenManage}
+            className="flex-1 rounded-lg bg-slate-800 px-3 py-1.5 text-sm text-white hover:bg-slate-700"
+          >
+            Soru Yönetimi
+          </button>
+          <button
+            onClick={onOpenHistory}
+            className="flex-1 rounded-lg bg-slate-200 px-3 py-1.5 text-sm hover:bg-slate-300"
+          >
+            Geçmiş
+          </button>
+        </div>
+      </div>
+
+      <div className="flex-1 overflow-y-auto p-2">
+        {folders.map((folder) => {
+          const isOpen = openFolders.has(folder.id)
+          const folderExams = exams.filter((e) => e.folder_id === folder.id)
+          return (
+            <div key={folder.id} className="mb-1">
+              <button
+                onClick={() => toggleFolder(folder.id)}
+                className="flex w-full items-center justify-between rounded-lg px-3 py-2 text-left font-medium hover:bg-slate-100"
+              >
+                <span>
+                  {isOpen ? '📂' : '📁'} {folder.name}
+                </span>
+                <span className="text-xs text-slate-400">{isOpen ? '▾' : '▸'}</span>
+              </button>
+              {isOpen && (
+                <div className="ml-4 border-l border-slate-200 pl-2">
+                  <button
+                    onClick={() => onStartFolder(folder)}
+                    className="mt-1 w-full rounded-lg bg-indigo-50 px-3 py-1.5 text-left text-sm font-medium text-indigo-700 hover:bg-indigo-100"
+                  >
+                    🔀 Tamamından karışık test
+                  </button>
+                  {folderExams.map((exam) => (
+                    <div
+                      key={exam.id}
+                      className="mt-1 flex items-center justify-between rounded-lg px-3 py-1.5 hover:bg-slate-100"
+                    >
+                      <span className="text-sm">📄 {exam.name}</span>
+                      <button
+                        onClick={() => onStartExam(exam)}
+                        className="rounded-md bg-emerald-600 px-2 py-0.5 text-xs text-white hover:bg-emerald-500"
+                      >
+                        Test
+                      </button>
+                    </div>
+                  ))}
+                  {folderExams.length === 0 && (
+                    <p className="px-3 py-1 text-xs text-slate-400">Sınav yok</p>
+                  )}
+                  {addingExamFor === folder.id ? (
+                    <div className="mt-1 flex gap-1 px-1">
+                      <input
+                        autoFocus
+                        value={newExamName}
+                        onChange={(e) => setNewExamName(e.target.value)}
+                        onKeyDown={(e) => e.key === 'Enter' && void submitExam(folder.id)}
+                        placeholder="Sınav adı"
+                        className="w-full rounded-md border border-slate-300 px-2 py-1 text-sm"
+                      />
+                      <button
+                        onClick={() => void submitExam(folder.id)}
+                        className="rounded-md bg-slate-800 px-2 text-sm text-white"
+                      >
+                        +
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={() => {
+                        setAddingExamFor(folder.id)
+                        setNewExamName('')
+                      }}
+                      className="mt-1 w-full rounded-lg px-3 py-1 text-left text-xs text-slate-500 hover:bg-slate-100"
+                    >
+                      + Yeni sınav ekle
+                    </button>
+                  )}
+                </div>
+              )}
+            </div>
+          )
+        })}
+
+        {addingFolder ? (
+          <div className="mt-2 flex gap-1 px-1">
+            <input
+              autoFocus
+              value={newFolderName}
+              onChange={(e) => setNewFolderName(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && void submitFolder()}
+              placeholder="Klasör adı (örn: 1. Hafta)"
+              className="w-full rounded-md border border-slate-300 px-2 py-1 text-sm"
+            />
+            <button
+              onClick={() => void submitFolder()}
+              className="rounded-md bg-slate-800 px-2 text-sm text-white"
+            >
+              +
+            </button>
+          </div>
+        ) : (
+          <button
+            onClick={() => {
+              setAddingFolder(true)
+              setNewFolderName('')
+            }}
+            className="mt-2 w-full rounded-lg border border-dashed border-slate-300 px-3 py-2 text-sm text-slate-500 hover:bg-slate-50"
+          >
+            + Yeni klasör ekle
+          </button>
+        )}
+      </div>
+    </aside>
+  )
+}
