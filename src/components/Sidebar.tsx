@@ -7,6 +7,7 @@ interface Props {
   exams: Exam[]
   onStartExam: (exam: Exam) => void
   onStartFolder: (folder: Folder) => void
+  onOpenExam: (exam: Exam) => void
   onOpenManage: () => void
   onOpenImport: () => void
   onOpenHistory: () => void
@@ -18,6 +19,7 @@ export default function Sidebar({
   exams,
   onStartExam,
   onStartFolder,
+  onOpenExam,
   onOpenManage,
   onOpenImport,
   onOpenHistory,
@@ -111,7 +113,13 @@ export default function Sidebar({
                       key={exam.id}
                       className="mt-1 flex items-center justify-between rounded-lg px-3 py-1.5 hover:bg-slate-100"
                     >
-                      <span className="text-sm">📄 {exam.name}</span>
+                      <button
+                        onClick={() => onOpenExam(exam)}
+                        className="min-w-0 flex-1 truncate text-left text-sm hover:text-indigo-700"
+                        title="Soruları görüntüle / düzenle"
+                      >
+                        📄 {exam.name}
+                      </button>
                       <button
                         onClick={() => onStartExam(exam)}
                         className="rounded-md bg-emerald-600 px-2 py-0.5 text-xs text-white hover:bg-emerald-500"
