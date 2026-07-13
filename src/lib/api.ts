@@ -49,6 +49,13 @@ export async function deleteExam(id: string): Promise<void> {
   if (error) throw error
 }
 
+/** Kartlarda soru sayısı göstermek için: tüm soruların sadece exam_id'leri. */
+export async function listQuestionExamIds(): Promise<{ exam_id: string }[]> {
+  const { data, error } = await getSupabase().from('questions').select('exam_id')
+  if (error) throw error
+  return data as { exam_id: string }[]
+}
+
 export async function listQuestionsByExam(examId: string): Promise<Question[]> {
   const { data, error } = await getSupabase()
     .from('questions')

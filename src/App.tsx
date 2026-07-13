@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import Sidebar from './components/Sidebar'
+import HomePage from './components/HomePage'
+import FolderPage from './components/FolderPage'
 import QuestionManager from './components/QuestionManager'
 import BulkImport from './components/BulkImport'
 import ExamDetail from './components/ExamDetail'
@@ -11,6 +13,7 @@ import {
   deleteFolder,
   listExams,
   listFolders,
+  listQuestionExamIds,
   listQuestionsByExam,
   listQuestionsByExamIds,
   shuffle,
@@ -18,17 +21,19 @@ import {
 import type { Exam, Folder, Question } from './types'
 
 type View =
-  | { type: 'welcome' }
+  | { type: 'home' }
+  | { type: 'folder'; folder: Folder }
+  | { type: 'exam'; exam: Exam }
   | { type: 'manage' }
   | { type: 'import' }
-  | { type: 'exam'; exam: Exam }
   | { type: 'history' }
-  | { type: 'quiz'; questions: Question[]; title: string }
+  | { type: 'quiz'; questions: Question[]; title: string; returnTo: View }
 
 export default function App() {
   const [folders, setFolders] = useState<Folder[]>([])
   const [exams, setExams] = useState<Exam[]>([])
-  const [view, setView] = useState<View>({ type: 'welcome' })
+  const [questionCounts, setQuestionCounts] = useState<Map<string, number>>(new Map())
+  const [view, setView] = useState<View>({ type: 'home' })
   const [error, setError] = useState<string | null>(null)
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
@@ -40,9 +45,16 @@ export default function App() {
 
   const reload = useCallback(async () => {
     try {
-      const [f, e] = await Promise.all([listFolders(), listExams()])
+      const [f, e, q] = await Promise.all([
+        listFolders(),
+        listExams(),
+        listQuestionExamIds(),
+      ])
       setFolders(f)
       setExams(e)
+      const counts = new Map<string, number>()
+      for (const row of q) counts.set(row.exam_id, (counts.get(row.exam_id) ?? 0) + 1)
+      setQuestionCounts(counts)
       setError(null)
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err))
@@ -70,6 +82,28 @@ export default function App() {
     )
   }
 
+  /** Bir görünümün "geri" hedefi. */
+  const parentOf = (v: View): View => {
+    switch (v.type) {
+      case 'exam': {
+        const folder = folders.find((f) => f.id === v.exam.folder_id)
+        return folder ? { type: 'folder', folder } : { type: 'home' }
+      }
+      case 'quiz':
+        return v.returnTo
+      default:
+        return { type: 'home' }
+    }
+  }
+
+  const backLabel = (v: View): string => {
+    if (v.type === 'exam') {
+      const folder = folders.find((f) => f.id === v.exam.folder_id)
+      if (folder) return folder.name
+    }
+    return 'Ana Sayfa'
+  }
+
   const startExamQuiz = async (exam: Exam) => {
     try {
       const questions = await listQuestionsByExam(exam.id)
@@ -77,7 +111,8 @@ export default function App() {
         alert('Bu sınavda hiç soru yok.')
         return
       }
-      go({ type: 'quiz', questions: shuffle(questions), title: exam.name })
+      const returnTo: View = view.type === 'quiz' ? view.returnTo : view
+      go({ type: 'quiz', questions: shuffle(questions), title: exam.name, returnTo })
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err))
     }
@@ -91,10 +126,12 @@ export default function App() {
         alert('Bu klasörde hiç soru yok.')
         return
       }
+      const returnTo: View = view.type === 'quiz' ? view.returnTo : view
       go({
         type: 'quiz',
         questions: shuffle(questions),
         title: `${folder.name} (karışık)`,
+        returnTo,
       })
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err))
@@ -111,8 +148,11 @@ export default function App() {
       return
     try {
       await deleteFolder(folder.id)
-      if (view.type === 'exam' && view.exam.folder_id === folder.id) {
-        setView({ type: 'welcome' })
+      if (
+        (view.type === 'exam' && view.exam.folder_id === folder.id) ||
+        (view.type === 'folder' && view.folder.id === folder.id)
+      ) {
+        setView({ type: 'home' })
       }
       await reload()
     } catch (err) {
@@ -124,13 +164,16 @@ export default function App() {
     try {
       await deleteExam(exam.id)
       if (view.type === 'exam' && view.exam.id === exam.id) {
-        setView({ type: 'welcome' })
+        const folder = folders.find((f) => f.id === exam.folder_id)
+        setView(folder ? { type: 'folder', folder } : { type: 'home' })
       }
       await reload()
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err))
     }
   }
+
+  const showBackBar = view.type !== 'home' && view.type !== 'quiz'
 
   return (
     <div className="flex h-screen bg-slate-100 text-slate-900">
@@ -143,7 +186,9 @@ export default function App() {
         >
           ☰
         </button>
-        <h1 className="text-base font-bold">Ayet / Şiir Ezber</h1>
+        <button onClick={() => go({ type: 'home' })} className="text-base font-bold">
+          Ayet / Şiir Ezber
+        </button>
       </header>
 
       {/* Mobil çekmece arka planı */}
@@ -160,6 +205,7 @@ export default function App() {
         onClose={() => setSidebarOpen(false)}
         folders={folders}
         exams={exams}
+        onOpenHome={() => go({ type: 'home' })}
         onStartExam={startExamQuiz}
         onStartFolder={startFolderQuiz}
         onOpenManage={() => go({ type: 'manage' })}
@@ -175,17 +221,40 @@ export default function App() {
             Hata: {error}
           </div>
         )}
-        {view.type === 'welcome' && (
-          <div className="flex h-full items-center justify-center p-8 text-center">
-            <div>
-              <h1 className="mb-3 text-2xl font-bold">Ayet / Şiir Ezber</h1>
-              <p className="max-w-md text-slate-600">
-                Soldaki panelden bir sınav seçip test başlat, yeni soru eklemek için
-                &quot;Soru Yönetimi&quot;ne gir, geçmiş performansın için
-                &quot;Geçmiş&quot;e bak.
-              </p>
-            </div>
+
+        {/* Geri çubuğu */}
+        {showBackBar && (
+          <div className="mx-auto max-w-3xl px-4 pt-4 sm:px-6">
+            <button
+              onClick={() => setView(parentOf(view))}
+              className="rounded-lg px-2 py-1 text-sm font-medium text-slate-500 hover:bg-slate-200 hover:text-slate-800"
+            >
+              ← {backLabel(view)}
+            </button>
           </div>
+        )}
+
+        {view.type === 'home' && (
+          <HomePage
+            folders={folders}
+            exams={exams}
+            questionCounts={questionCounts}
+            onOpenFolder={(folder) => go({ type: 'folder', folder })}
+            onOpenManage={() => go({ type: 'manage' })}
+            onOpenImport={() => go({ type: 'import' })}
+            onOpenHistory={() => go({ type: 'history' })}
+          />
+        )}
+        {view.type === 'folder' && (
+          <FolderPage
+            key={view.folder.id}
+            folder={view.folder}
+            exams={exams}
+            questionCounts={questionCounts}
+            onOpenExam={(exam) => go({ type: 'exam', exam })}
+            onStartExam={startExamQuiz}
+            onStartFolder={startFolderQuiz}
+          />
         )}
         {view.type === 'manage' && (
           <QuestionManager folders={folders} exams={exams} onDataChanged={reload} />
@@ -207,7 +276,7 @@ export default function App() {
             key={view.title + view.questions.map((q) => q.id).join(',')}
             questions={view.questions}
             title={view.title}
-            onExit={() => setView({ type: 'welcome' })}
+            onExit={() => setView(view.returnTo)}
           />
         )}
       </main>

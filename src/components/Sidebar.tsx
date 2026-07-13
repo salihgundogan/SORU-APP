@@ -5,6 +5,7 @@ import { createExam, createFolder } from '../lib/api'
 interface Props {
   isOpen: boolean
   onClose: () => void
+  onOpenHome: () => void
   folders: Folder[]
   exams: Exam[]
   onStartExam: (exam: Exam) => void
@@ -20,6 +21,7 @@ interface Props {
 export default function Sidebar({
   isOpen,
   onClose,
+  onOpenHome,
   folders,
   exams,
   onStartExam,
@@ -73,7 +75,13 @@ export default function Sidebar({
     >
       <div className="border-b border-slate-200 p-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-bold">Ezber Testleri</h2>
+          <button
+            onClick={onOpenHome}
+            className="text-lg font-bold hover:text-indigo-700"
+            title="Ana sayfaya dön"
+          >
+            🏠 Ezber Testleri
+          </button>
           <button
             onClick={onClose}
             className="rounded-lg p-1 text-xl leading-none text-slate-500 hover:bg-slate-100 md:hidden"
