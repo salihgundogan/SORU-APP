@@ -38,7 +38,7 @@ export default function HomePage({
           <button
             key={a.label}
             onClick={a.onClick}
-            className="rounded-2xl border border-stone-200/70 bg-white p-3 text-center shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md sm:p-4"
+            className="rounded-2xl border border-stone-200/70 bg-card p-3 text-center shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md sm:p-4"
           >
             <div className="text-2xl">{a.icon}</div>
             <div className="mt-1.5 text-xs font-medium text-stone-700 sm:text-sm">
@@ -53,7 +53,7 @@ export default function HomePage({
         Klasörler
       </h2>
       {folders.length === 0 ? (
-        <p className="rounded-2xl border border-stone-200/70 bg-white p-8 text-center text-sm text-stone-400 shadow-sm">
+        <p className="rounded-2xl border border-stone-200/70 bg-card p-8 text-center text-sm text-stone-400 shadow-sm">
           Henüz klasör yok — soldaki menüden veya &quot;Toplu Ekle&quot; ile
           oluşturabilirsin.
         </p>
@@ -69,7 +69,7 @@ export default function HomePage({
               <button
                 key={folder.id}
                 onClick={() => onOpenFolder(folder)}
-                className="group flex items-center gap-3 rounded-2xl border border-stone-200/70 bg-white p-4 text-left shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md"
+                className="group flex items-center gap-3 rounded-2xl border border-stone-200/70 bg-card p-4 text-left shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md"
               >
                 <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-emerald-50 text-xl">
                   📁

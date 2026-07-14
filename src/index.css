@@ -2,6 +2,36 @@
 
 @theme {
   --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  /* Tema anlamları: kart zemini ve "mürekkep" (koyu) butonlar */
+  --color-card: #ffffff;
+  --color-ink: #292524; /* stone-800 */
+  --color-ink-h: #44403c; /* stone-700, hover */
+}
+
+/* Karanlık tema: kullanılan renklerin anlamı .dark altında değişir —
+   bileşenlerde ayrıca dark: sınıfı gerekmez. */
+.dark {
+  color-scheme: dark;
+  --color-card: #292524;
+  --color-ink: #e7e5e4;
+  --color-ink-h: #d6d3d1;
+  --color-stone-50: #221f1c;
+  --color-stone-100: #1a1714;
+  --color-stone-200: #3b3835;
+  --color-stone-300: #57534e;
+  --color-stone-400: #8a8580;
+  --color-stone-500: #aaa5a0;
+  --color-stone-600: #c9c5c1;
+  --color-stone-700: #d6d3d1;
+  --color-stone-800: #e7e5e4;
+  --color-stone-900: #f5f5f4;
+  --color-emerald-50: #0b3327;
+  --color-emerald-100: #0e412f;
+  --color-rose-50: #3d1322;
+  --color-rose-100: #4c1728;
+  --color-amber-50: #33280c;
+  --color-amber-100: #403210;
+  --color-amber-300: #6b5416;
 }
 
 body {

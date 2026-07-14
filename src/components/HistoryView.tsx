@@ -77,7 +77,7 @@ export default function HistoryView({ folders, exams }: Props) {
         )
 
         return (
-          <div key={folder.id} className="mb-4 rounded-2xl bg-white p-4 shadow-sm sm:p-5">
+          <div key={folder.id} className="mb-4 rounded-2xl bg-card p-4 shadow-sm sm:p-5">
             <div className="mb-3 flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
               <h3 className="font-bold">📁 {folder.name}</h3>
               <div className="text-sm text-stone-600">

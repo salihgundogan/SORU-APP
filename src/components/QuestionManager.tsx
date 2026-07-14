@@ -130,7 +130,7 @@ export default function QuestionManager({ folders, exams, onDataChanged }: Props
     <div className="mx-auto max-w-3xl animate-fade-up p-4 sm:p-6">
       <h2 className="mb-4 text-xl font-bold">Soru Yönetimi</h2>
 
-      <div className="mb-6 rounded-2xl bg-white p-5 shadow-sm">
+      <div className="mb-6 rounded-2xl bg-card p-5 shadow-sm">
         <h3 className="mb-3 font-medium">
           {editingId ? 'Soruyu Düzenle' : 'Yeni Soru Ekle'}
         </h3>
@@ -241,7 +241,7 @@ export default function QuestionManager({ folders, exams, onDataChanged }: Props
           <button
             onClick={() => void save()}
             disabled={busy}
-            className="rounded-lg bg-stone-800 px-5 py-2 font-medium text-white hover:bg-stone-700 disabled:opacity-50"
+            className="rounded-lg bg-ink px-5 py-2 font-medium text-card hover:bg-ink-h disabled:opacity-50"
           >
             {busy ? 'Kaydediliyor…' : editingId ? 'Güncelle' : 'Kaydet'}
           </button>
@@ -257,7 +257,7 @@ export default function QuestionManager({ folders, exams, onDataChanged }: Props
       </div>
 
       {realExamSelected && (
-        <div className="rounded-2xl bg-white p-5 shadow-sm">
+        <div className="rounded-2xl bg-card p-5 shadow-sm">
           <h3 className="mb-3 font-medium">
             Bu sınavdaki sorular ({questions.length})
           </h3>

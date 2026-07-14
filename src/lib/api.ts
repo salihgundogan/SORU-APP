@@ -20,6 +20,11 @@ export async function createFolder(name: string): Promise<Folder> {
   return data as Folder
 }
 
+export async function renameFolder(id: string, name: string): Promise<void> {
+  const { error } = await getSupabase().from('folders').update({ name }).eq('id', id)
+  if (error) throw error
+}
+
 export async function deleteFolder(id: string): Promise<void> {
   const { error } = await getSupabase().from('folders').delete().eq('id', id)
   if (error) throw error
@@ -42,6 +47,11 @@ export async function createExam(folderId: string, name: string): Promise<Exam> 
     .single()
   if (error) throw error
   return data as Exam
+}
+
+export async function renameExam(id: string, name: string): Promise<void> {
+  const { error } = await getSupabase().from('exams').update({ name }).eq('id', id)
+  if (error) throw error
 }
 
 export async function deleteExam(id: string): Promise<void> {

@@ -16,6 +16,8 @@ import {
   listQuestionExamIds,
   listQuestionsByExam,
   listQuestionsByExamIds,
+  renameExam,
+  renameFolder,
   shuffle,
 } from './lib/api'
 import type { Exam, Folder, Question } from './types'
@@ -138,6 +140,34 @@ export default function App() {
     }
   }
 
+  const renameFolderPrompt = async (folder: Folder) => {
+    const name = prompt('Klasörün yeni adı:', folder.name)?.trim()
+    if (!name || name === folder.name) return
+    try {
+      await renameFolder(folder.id, name)
+      if (view.type === 'folder' && view.folder.id === folder.id) {
+        setView({ type: 'folder', folder: { ...folder, name } })
+      }
+      await reload()
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err))
+    }
+  }
+
+  const renameExamPrompt = async (exam: Exam) => {
+    const name = prompt('Sınavın yeni adı:', exam.name)?.trim()
+    if (!name || name === exam.name) return
+    try {
+      await renameExam(exam.id, name)
+      if (view.type === 'exam' && view.exam.id === exam.id) {
+        setView({ type: 'exam', exam: { ...exam, name } })
+      }
+      await reload()
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err))
+    }
+  }
+
   const removeFolder = async (folder: Folder) => {
     const examCount = exams.filter((e) => e.folder_id === folder.id).length
     if (
@@ -192,7 +222,7 @@ export default function App() {
   return (
     <div className="flex h-screen bg-stone-100 text-stone-900">
       {/* Mobil üst şerit */}
-      <header className="fixed inset-x-0 top-0 z-20 flex h-14 items-center gap-3 border-b border-stone-200 bg-white px-4 md:hidden">
+      <header className="fixed inset-x-0 top-0 z-20 flex h-14 items-center gap-3 border-b border-stone-200 bg-card px-4 md:hidden">
         <button
           onClick={() => setSidebarOpen(true)}
           className="rounded-lg p-1.5 text-2xl leading-none hover:bg-stone-100"
@@ -268,6 +298,7 @@ export default function App() {
             onOpenExam={(exam) => go({ type: 'exam', exam })}
             onStartExam={startExamQuiz}
             onStartFolder={startFolderQuiz}
+            onRenameFolder={renameFolderPrompt}
           />
         )}
         {view.type === 'manage' && (
@@ -282,6 +313,7 @@ export default function App() {
             exam={view.exam}
             onStartExam={startExamQuiz}
             onDeleteExam={removeExam}
+            onRenameExam={renameExamPrompt}
           />
         )}
         {view.type === 'history' && <HistoryView folders={folders} exams={exams} />}

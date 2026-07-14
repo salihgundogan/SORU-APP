@@ -6,9 +6,10 @@ interface Props {
   exam: Exam
   onStartExam: (exam: Exam) => void
   onDeleteExam: (exam: Exam) => void
+  onRenameExam: (exam: Exam) => void
 }
 
-export default function ExamDetail({ exam, onStartExam, onDeleteExam }: Props) {
+export default function ExamDetail({ exam, onStartExam, onDeleteExam, onRenameExam }: Props) {
   const [questions, setQuestions] = useState<Question[] | null>(null)
   const [error, setError] = useState<string | null>(null)
 
@@ -80,7 +81,17 @@ export default function ExamDetail({ exam, onStartExam, onDeleteExam }: Props) {
     <div className="mx-auto max-w-3xl animate-fade-up p-4 sm:p-6">
       <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h2 className="text-xl font-bold">📄 {exam.name}</h2>
+          <h2 className="flex items-center gap-2 text-xl font-bold">
+            📄 {exam.name}
+            <button
+              onClick={() => onRenameExam(exam)}
+              title="Sınavı yeniden adlandır"
+              aria-label="Sınavı yeniden adlandır"
+              className="rounded-lg p-1 text-sm text-stone-400 transition hover:bg-stone-200 hover:text-stone-700"
+            >
+              ✏️
+            </button>
+          </h2>
           <p className="text-sm text-stone-500">
             {questions === null ? 'Yükleniyor…' : `${questions.length} soru`} — düzenlemek
             için soruya tıkla.
@@ -118,7 +129,7 @@ export default function ExamDetail({ exam, onStartExam, onDeleteExam }: Props) {
       )}
 
       {questions?.length === 0 && (
-        <p className="rounded-xl bg-white p-6 text-center text-stone-400 shadow-sm">
+        <p className="rounded-xl bg-card p-6 text-center text-stone-400 shadow-sm">
           Bu sınavda henüz soru yok — "Soru Yönetimi" veya "Toplu Soru Ekle" ile
           ekleyebilirsin.
         </p>
@@ -129,7 +140,7 @@ export default function ExamDetail({ exam, onStartExam, onDeleteExam }: Props) {
         return (
           <div
             key={q.id}
-            className={`mb-3 rounded-2xl bg-white shadow-sm transition ${
+            className={`mb-3 rounded-2xl bg-card shadow-sm transition ${
               isEditing ? 'ring-2 ring-emerald-300' : ''
             }`}
           >
@@ -201,7 +212,7 @@ export default function ExamDetail({ exam, onStartExam, onDeleteExam }: Props) {
                   <button
                     onClick={() => void save(q)}
                     disabled={busy}
-                    className="rounded-lg bg-stone-800 px-4 py-2 text-sm font-medium text-white hover:bg-stone-700 disabled:opacity-50"
+                    className="rounded-lg bg-ink px-4 py-2 text-sm font-medium text-card hover:bg-ink-h disabled:opacity-50"
                   >
                     {busy ? 'Kaydediliyor…' : 'Kaydet'}
                   </button>

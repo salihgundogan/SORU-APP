@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import type { Exam, Folder } from '../types'
 import { createExam, createFolder } from '../lib/api'
+import ThemeToggle from './ThemeToggle'
 
 interface Props {
   isOpen: boolean
@@ -71,7 +72,7 @@ export default function Sidebar({
     <aside
       className={`${
         isOpen ? 'flex' : 'hidden md:flex'
-      } fixed inset-y-0 left-0 z-40 w-72 max-w-[85%] shrink-0 flex-col border-r border-stone-200 bg-white md:static md:z-auto md:max-w-none`}
+      } fixed inset-y-0 left-0 z-40 w-72 max-w-[85%] shrink-0 flex-col border-r border-stone-200 bg-card md:static md:z-auto md:max-w-none`}
     >
       <div className="border-b border-stone-200 p-4">
         <div className="flex items-center justify-between">
@@ -82,18 +83,21 @@ export default function Sidebar({
           >
             🏠 Ezber Testleri
           </button>
-          <button
-            onClick={onClose}
-            className="rounded-lg p-1 text-xl leading-none text-stone-500 hover:bg-stone-100 md:hidden"
-            aria-label="Menüyü kapat"
-          >
-            ✕
-          </button>
+          <div className="flex items-center gap-1">
+            <ThemeToggle />
+            <button
+              onClick={onClose}
+              className="rounded-lg p-1 text-xl leading-none text-stone-500 hover:bg-stone-100 md:hidden"
+              aria-label="Menüyü kapat"
+            >
+              ✕
+            </button>
+          </div>
         </div>
         <div className="mt-3 flex gap-2">
           <button
             onClick={onOpenManage}
-            className="flex-1 rounded-lg bg-stone-800 px-3 py-1.5 text-sm text-white hover:bg-stone-700"
+            className="flex-1 rounded-lg bg-ink px-3 py-1.5 text-sm text-card hover:bg-ink-h"
           >
             Soru Yönetimi
           </button>
@@ -170,7 +174,7 @@ export default function Sidebar({
                       />
                       <button
                         onClick={() => void submitExam(folder.id)}
-                        className="rounded-md bg-stone-800 px-2 text-sm text-white"
+                        className="rounded-md bg-ink px-2 text-sm text-card"
                       >
                         +
                       </button>
@@ -210,7 +214,7 @@ export default function Sidebar({
             />
             <button
               onClick={() => void submitFolder()}
-              className="rounded-md bg-stone-800 px-2 text-sm text-white"
+              className="rounded-md bg-ink px-2 text-sm text-card"
             >
               +
             </button>

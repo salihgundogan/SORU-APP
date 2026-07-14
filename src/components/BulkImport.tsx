@@ -80,7 +80,7 @@ export default function BulkImport({ folders, exams, onDataChanged }: Props) {
         varsa mevcut olanlara eklenir.
       </p>
 
-      <details className="mb-4 rounded-xl border border-stone-200 bg-white">
+      <details className="mb-4 rounded-xl border border-stone-200 bg-card">
         <summary className="cursor-pointer px-4 py-3 font-medium text-stone-700">
           📋 Format kuralları
         </summary>
@@ -157,7 +157,7 @@ export default function BulkImport({ folders, exams, onDataChanged }: Props) {
                 {exam.questions.map((q, j) => (
                   <li
                     key={j}
-                    className="rounded-lg bg-white/70 px-3 py-1.5 text-sm text-stone-700"
+                    className="rounded-lg bg-card/70 px-3 py-1.5 text-sm text-stone-700"
                   >
                     <span dir="rtl" className="font-arabic text-base">
                       {q.parcalar[0]}
@@ -188,7 +188,7 @@ export default function BulkImport({ folders, exams, onDataChanged }: Props) {
       <button
         onClick={() => void save()}
         disabled={busy || !result?.data}
-        className="rounded-lg bg-stone-800 px-5 py-2.5 font-medium text-white hover:bg-stone-700 disabled:cursor-not-allowed disabled:opacity-40"
+        className="rounded-lg bg-ink px-5 py-2.5 font-medium text-card hover:bg-ink-h disabled:cursor-not-allowed disabled:opacity-40"
       >
         {busy
           ? 'Kaydediliyor…'

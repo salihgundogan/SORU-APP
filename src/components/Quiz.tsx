@@ -1,6 +1,41 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import type { Question, QuizResult, Sonuc } from '../types'
 import { saveAttempt, shuffle } from '../lib/api'
+import ThemeToggle from './ThemeToggle'
+
+/** Arapça metin punto kademeleri (A butonuyla döngüsel değişir). */
+const FONT_SIZES = [
+  'text-xl leading-loose sm:text-2xl sm:leading-loose',
+  'text-2xl leading-loose sm:text-3xl sm:leading-loose',
+  'text-3xl leading-loose sm:text-4xl sm:leading-loose',
+]
+
+/** Quiz boyunca ekranı uyanık tutar (destekleyen tarayıcılarda). */
+function useWakeLock() {
+  useEffect(() => {
+    let lock: WakeLockSentinel | null = null
+    let active = true
+    const request = async () => {
+      try {
+        if (active && 'wakeLock' in navigator) {
+          lock = await navigator.wakeLock.request('screen')
+        }
+      } catch {
+        // desteklenmiyor veya izin yok — sessizce geç
+      }
+    }
+    void request()
+    const onVisibility = () => {
+      if (document.visibilityState === 'visible') void request()
+    }
+    document.addEventListener('visibilitychange', onVisibility)
+    return () => {
+      active = false
+      document.removeEventListener('visibilitychange', onVisibility)
+      void lock?.release().catch(() => {})
+    }
+  }, [])
+}
 
 interface Props {
   questions: Question[]
@@ -59,6 +94,20 @@ export default function Quiz({ questions, title, onExit }: Props) {
   // "tekrar dene" yeni bir oturum başlatır.
   const [sessionId, setSessionId] = useState(() => crypto.randomUUID())
 
+  useWakeLock()
+
+  const [fontSize, setFontSize] = useState(() => {
+    const raw = localStorage.getItem('quizFontSize')
+    if (raw === null) return 1
+    const saved = Number(raw)
+    return saved >= 0 && saved < FONT_SIZES.length ? saved : 1
+  })
+  const cycleFontSize = () => {
+    const next = (fontSize + 1) % FONT_SIZES.length
+    setFontSize(next)
+    localStorage.setItem('quizFontSize', String(next))
+  }
+
   const question = pool[index]
   const bothSelected = metinSonuc !== null && nukteSonuc !== null
   const isLast = index === pool.length - 1
@@ -108,7 +157,7 @@ export default function Quiz({ questions, title, onExit }: Props) {
     const emoji = pct === 100 ? '🎉' : pct >= 70 ? '👏' : pct >= 40 ? '💪' : '📖'
     return (
       <div className="flex min-h-dvh items-center justify-center p-6">
-        <div className="w-full max-w-md animate-fade-up rounded-3xl border border-stone-200/70 bg-white p-8 text-center shadow-sm">
+        <div className="w-full max-w-md animate-fade-up rounded-3xl border border-stone-200/70 bg-card p-8 text-center shadow-sm">
           <div className="text-5xl">{emoji}</div>
           <h2 className="mt-3 text-xl font-bold">Test Bitti</h2>
           <p className="text-sm text-stone-500">{title}</p>
@@ -143,7 +192,7 @@ export default function Quiz({ questions, title, onExit }: Props) {
             )}
             <button
               onClick={() => restart(questions)}
-              className="rounded-xl bg-stone-800 px-4 py-3 font-medium text-white transition hover:bg-stone-700 active:scale-[.99]"
+              className="rounded-xl bg-ink px-4 py-3 font-medium text-card transition hover:bg-ink-h active:scale-[.99]"
             >
               Tümünü tekrar dene ({questions.length})
             </button>
@@ -178,6 +227,17 @@ export default function Quiz({ questions, title, onExit }: Props) {
         <div className="min-w-0 flex-1 truncate text-center text-sm font-semibold text-stone-600">
           {title}
         </div>
+        <button
+          onClick={cycleFontSize}
+          title="Arapça yazı boyutu"
+          aria-label="Arapça yazı boyutunu değiştir"
+          className={`w-9 rounded-full py-1 font-bold text-stone-400 transition hover:bg-stone-200 hover:text-stone-700 ${
+            fontSize === 0 ? 'text-xs' : fontSize === 1 ? 'text-sm' : 'text-lg'
+          }`}
+        >
+          A
+        </button>
+        <ThemeToggle />
         <div className="text-sm font-medium tabular-nums text-stone-400">
           {index + 1}/{pool.length}
         </div>
@@ -200,7 +260,7 @@ export default function Quiz({ questions, title, onExit }: Props) {
       {/* Metin kartı */}
       <div
         key={question.id}
-        className="mb-4 animate-fade-up rounded-2xl border border-stone-200/70 bg-white p-5 shadow-sm"
+        className="mb-4 animate-fade-up rounded-2xl border border-stone-200/70 bg-card p-5 shadow-sm"
       >
         <div className="mb-4 flex items-center justify-between">
           <h3 className="text-xs font-semibold tracking-widest text-stone-400 uppercase">
@@ -214,7 +274,7 @@ export default function Quiz({ questions, title, onExit }: Props) {
               <div
                 key={i}
                 dir="rtl"
-                className="animate-fade-up rounded-xl bg-stone-50 px-4 py-3 text-right font-arabic text-2xl leading-loose text-stone-800 sm:text-3xl sm:leading-loose"
+                className={`animate-fade-up rounded-xl bg-stone-50 px-4 py-3 text-right font-arabic text-stone-800 ${FONT_SIZES[fontSize]}`}
               >
                 {parca}
               </div>
@@ -229,7 +289,7 @@ export default function Quiz({ questions, title, onExit }: Props) {
         {revealedCount < question.parcalar.length && (
           <button
             onClick={() => setRevealedCount(revealedCount + 1)}
-            className="mt-4 w-full rounded-xl bg-stone-800 px-4 py-3 font-medium text-white transition hover:bg-stone-700 active:scale-[.99]"
+            className="mt-4 w-full rounded-xl bg-ink px-4 py-3 font-medium text-card transition hover:bg-ink-h active:scale-[.99]"
           >
             Sonraki Parçayı Göster
             <span className="ml-2 text-sm text-stone-400">
@@ -240,7 +300,7 @@ export default function Quiz({ questions, title, onExit }: Props) {
       </div>
 
       {/* Nükte kartı */}
-      <div className="mb-6 rounded-2xl border border-stone-200/70 bg-white p-5 shadow-sm">
+      <div className="mb-6 rounded-2xl border border-stone-200/70 bg-card p-5 shadow-sm">
         <div className="mb-4 flex items-center justify-between">
           <h3 className="text-xs font-semibold tracking-widest text-stone-400 uppercase">
             Nükte
